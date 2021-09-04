@@ -1,16 +1,22 @@
 import urllib.request
+import json
 
 class TipRanksScraper:
 
   def __init__(self):
     print('hello world')
 
+  def get_analysts_page(self):
+    with urllib.request.urlopen(
+      'https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=analyst&period=year&benchmark=naive&sector=general'
+      ) as response:
+      self.analysts_page = json.loads(response.read())
+    print(self.analysts_page)
 
-  def get_analysts(self):
-    with urllib.request.urlopen('https://www.tipranks.com/analysts/top') as response:
-      html = response.read()
-    print(html)
+  def extract_analyst_urls(self):
+    get_analysts_page()
 
 
 scraper = TipRanksScraper()
-scraper.get_analysts()
+scraper.get_analysts_page()
+
