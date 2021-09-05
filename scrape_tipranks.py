@@ -1,22 +1,30 @@
 import urllib.request
 import json
+import pdb
 
 class TipRanksScraper:
 
-  def __init__(self):
-    print('hello world')
-
-  def get_analysts_page(self):
+  def get_analysts_info(self):
     with urllib.request.urlopen(
       'https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=analyst&period=year&benchmark=naive&sector=general'
-      ) as response:
-      self.analysts_page = json.loads(response.read())
-    print(self.analysts_page)
+    ) as analysts:
+      return json.loads(analysts.read())
+
+  def analyst_stocks_url(self, analyst):
+    name = analyst['name'].lower().replace(' ', '-')
+    with urllib.request.urlopen(
+      'https://www.tipranks.com/api/experts/getStocks/?period=year&benchmark=naive&name={}'.format(name)
+    ) as analyst_stocks:
+      return json.loads(analyst_stocks.read())
 
   def extract_analyst_urls(self):
-    get_analysts_page()
+    analysts = self.get_analysts_info()
+    stock_picks = self.analyst_stocks_url(analysts[0])
+    print(tuple(map(lambda stock : stock['ticker'], stock_picks)))
+
+
 
 
 scraper = TipRanksScraper()
-scraper.get_analysts_page()
+scraper.extract_analyst_urls()
 
