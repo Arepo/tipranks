@@ -13,14 +13,19 @@ class TipRanksScraper:
   def analyst_stocks_url(self, analyst):
     name = analyst['name'].lower().replace(' ', '-')
     with urllib.request.urlopen(
-      'https://www.tipranks.com/api/experts/getStocks/?period=year&benchmark=naive&name={}'.format(name)
+      'https://www.tipranks.com/api/experts/getStocks/?period=year&benchmark=naive&name={}'.
+      format(name)
     ) as analyst_stocks:
       return json.loads(analyst_stocks.read())
 
+  def is_recommended(self, stock):
+    return stock['latestRating']['rating'].lower() == 'buy'
+
   def extract_analyst_urls(self):
     analysts = self.get_analysts_info()
-    stock_picks = self.analyst_stocks_url(analysts[0])
-    print(tuple(map(lambda stock : stock['ticker'], stock_picks)))
+    stock_evaluations = self.analyst_stocks_url(analysts[0])
+    recommendations = tuple(filter(self.is_recommended, stock_evaluations))
+    print(tuple(map(lambda stock : stock['name'], recommendations)))
 
 
 
