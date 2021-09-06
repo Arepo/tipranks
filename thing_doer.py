@@ -2,13 +2,17 @@ import urllib.request
 import json
 import time
 from collections import Counter
+import pdb
 
 class ThingDoer:
 
-  def __init__(self, number_of_analysts):
+  def __init__(self, analysts_url='', stocks_url='', stocks_url_identifier='', filter_function=None):
     self.recommendations_list = []
     self.analysts_info = None
-    self.number_of_analysts = number_of_analysts
+    self.analysts_url = analysts_url
+    self.stocks_url = stocks_url
+    self.stocks_url_identifier = stocks_url_identifier
+    self.filter_function = filter_function
 
   def count_recommendations(self):
     self.__get_filtered_recommendations()
@@ -18,16 +22,16 @@ class ThingDoer:
     for analyst in self.__get_analysts_info():
       print('getting picks for {}'.format(analyst['name']))
       time.sleep(3) # don't accidentally DDOS them/hit rate limits
-      self.__get_recommendations(analyst)
+      if self.filter_function:
+        return self.filter_function(self.__get_recommendations(analyst))
+      else:
+        return self.__get_recommendations(analyst)
 
   def __get_analysts_info(self):
     if self.analysts_info is not None:
       return self.analysts_info
 
-    with urllib.request.urlopen(
-      'https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=analyst&period=year&benchmark=naive&sector=general&numExperts={}'
-        .format(self.number_of_analysts)
-    ) as analysts:
+    with urllib.request.urlopen(self.analysts_url) as analysts:
       self.analysts_info = json.loads(analysts.read())
       return self.analysts_info
 
@@ -39,9 +43,6 @@ class ThingDoer:
     return stock['latestRating']['rating'].lower() == 'buy'
 
   def __get_analyst_evaluations(self, analyst):
-    name = analyst['name'].lower().replace(' ', '-')
-    with urllib.request.urlopen(
-      'https://www.tipranks.com/api/experts/getStocks/?period=year&benchmark=naive&name={}'.
-      format(name)
-    ) as analyst_stocks:
+    identifier = analyst[self.stocks_url_identifier].lower().replace(' ', '-')
+    with urllib.request.urlopen(self.stocks_url + self.stocks_url_identifier + '=' + identifier) as analyst_stocks:
       return json.loads(analyst_stocks.read())

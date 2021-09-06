@@ -8,24 +8,26 @@ from .thing_doer import ThingDoer
 class RetailScraper:
 
   def __init__(self, thing_doer=None, number_of_analysts=100):
-    self.thing_doer = thing_doer or ThingDoer(number_of_analysts)
+    if not thing_doer:
+      self.thing_doer = ThingDoer(
+        analysts_url='https://www.tipranks.com/api/experts/getTop25Experts/?expertType=10&numExperts={}'
+        .format(number_of_analysts),
+        filter_function=self.get_good_analysts_info)
 
   def count_recommendations(self):
-    self.thing_doer.count_recommendations()
+    return self.thing_doer.count_recommendations()
 
-  def __get_analysts_info(self):
-    if self.analysts_info is not None:
-      return self.analysts_info
+  # def __get_analysts_info(self):
+  #   if self.analysts_info is not None:
+  #     return self.analysts_info
 
-    with urllib.request.urlopen(
-      'https://www.tipranks.com/api/experts/getTop25Experts/?expertType=10&numExperts={}'
-        .format(self.number_of_analysts)
-    ) as analysts:
-      self.analysts_info = json.loads(analysts.read())
-      return self.analysts_info
+  #   with urllib.request.urlopen(
+  #   ) as analysts:
+  #     self.analysts_info = json.loads(analysts.read())
+  #     return self.analysts_info
 
-  def __get_good_analysts_info(self, min_success_rate=0.8):
-    return [analyst for analyst in self.__get_analysts_info() if analyst['recommendations']['ratio'] > min_success_rate]
+  def get_good_analysts_info(self, analysts, min_success_rate=0.8):
+    [analyst for analyst in analysts if analyst['recommendations']['ratio'] > min_success_rate]
 
   def __get_analyst_evaluations(self, analyst):
     with urllib.request.urlopen(

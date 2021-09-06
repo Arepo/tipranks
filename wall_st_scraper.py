@@ -1,4 +1,3 @@
-
 from .thing_doer import ThingDoer
 import pdb
 
@@ -7,7 +6,12 @@ class WallStScraper:
 
   def __init__(self, thing_doer=None, number_of_analysts=25):
     if not thing_doer:
-      self.thing_doer = ThingDoer(number_of_analysts)
+      self.thing_doer = ThingDoer(
+        analysts_url='https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=analyst&period=year&benchmark=naive&sector=general&numExperts={}'
+          .format(number_of_analysts),
+        stocks_url='https://www.tipranks.com/api/experts/getStocks/?period=year&benchmark=naive&',
+        stocks_url_identifier='name'
+        )
 
   def count_recommendations(self):
     return self.thing_doer.count_recommendations()
@@ -31,12 +35,12 @@ class WallStScraper:
   #   ) as analyst_stocks:
   #     return json.loads(analyst_stocks.read())
 
-  def __is_recommended(self, stock):
-    return stock['latestRating']['rating'].lower() == 'buy'
+  # def __is_recommended(self, stock):
+  #   return stock['latestRating']['rating'].lower() == 'buy'
 
-  # def __get_recommendations(self, analyst):
-  #   stock_evaluations = self.__get_analyst_evaluations(analyst)
-  #   self.recommendations_list += [stock['name'] for stock in stock_evaluations if self.__is_recommended(stock)]
+  # # def __get_recommendations(self, analyst):
+  # #   stock_evaluations = self.__get_analyst_evaluations(analyst)
+  # #   self.recommendations_list += [stock['name'] for stock in stock_evaluations if self.__is_recommended(stock)]
 
   # def __get_filtered_recommendations(self):
   #   for analyst in self.__get_analysts_info():

@@ -1,5 +1,5 @@
 from .wall_st_scraper import WallStScraper
-from .retail_scraper import RetailScraper
+# from .retail_scraper import RetailScraper
 
 # def test_retail_scraper():
 #     scraper = RetailScraper(number_of_analysts=4)
