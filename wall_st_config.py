@@ -1,20 +1,21 @@
-from .thing_doer import ThingDoer
-import pdb
+class WallStConfig:
 
-
-class WallStScraper:
-
-  def __init__(self, thing_doer=None, number_of_analysts=25):
-    if not thing_doer:
-      self.thing_doer = ThingDoer(
-        analysts_url='https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=analyst&period=year&benchmark=naive&sector=general&numExperts={}'
-          .format(number_of_analysts),
-        stocks_url='https://www.tipranks.com/api/experts/getStocks/?period=year&benchmark=naive&',
-        stocks_url_identifier='name'
-        )
+  def __init__(self, number_of_analysts=25):
+    self.number_of_analysts = number_of_analysts
 
   def count_recommendations(self):
     return self.thing_doer.count_recommendations()
+
+  def stocks_url(self, analyst):
+    return ('https://www.tipranks.com/api/experts/getStocks/?period=year&benchmark=naive&name={}'
+      .format(analyst['name'].lower().replace(' ', '-')))
+
+  def analysts_url(self):
+    return ('https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=analyst&period=year&benchmark=naive&sector=general&numExperts={}'
+      .format(self.number_of_analysts))
+
+  def filter_analysts(self, analysts):
+    return analysts
 
   # def __get_analysts_info(self):
   #   if self.analysts_info is not None:
