@@ -7,9 +7,13 @@ import collections
 
 
 class TipRanksScraper:
+
+  def __init__(self):
+    self.recommendations_list = []
+
   def get_analysts_info(self):
     with urllib.request.urlopen(
-      'https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=analyst&period=year&benchmark=naive&sector=general&numExperts=100'
+      'https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=analyst&period=year&benchmark=naive&sector=general&numExperts=25'
     ) as analysts:
       return json.loads(analysts.read())
 
@@ -30,10 +34,9 @@ class TipRanksScraper:
 
   def get_all_recommendations(self):
     analysts = self.get_analysts_info()
-    self.recommendations_list = []
     for analyst in analysts:
       print('getting picks for {}'.format(analyst['name']))
-      time.sleep(30) # don't accidentally DDOS them
+      time.sleep(20) # don't accidentally DDOS them/hit rate limits
       self.get_recommendations(analyst)
 
   def count_recommendations(self):
