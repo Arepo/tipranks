@@ -5,14 +5,18 @@ from collections import Counter
 
 
 
-class TipRanksScraper:
+class WallStScraper:
 
-  def __init__(self):
+  def __init__(self, number_of_analysts=25):
     self.analysts_info = None
     self.recommendations_list = []
-    self.number_of_analysts = 25
+    self.number_of_analysts = number_of_analysts
 
-  def get_analysts_info(self):
+  def count_recommendations(self):
+    self.__get_all_recommendations()
+    return Counter(self.recommendations_list)
+
+  def __get_analysts_info(self):
     if self.analysts_info is not None:
       return self.analysts_info
 
@@ -23,7 +27,7 @@ class TipRanksScraper:
       self.analysts_info = json.loads(analysts.read())
       return self.analysts_info
 
-  def get_analyst_evaluations(self, analyst):
+  def __get_analyst_evaluations(self, analyst):
     name = analyst['name'].lower().replace(' ', '-')
     with urllib.request.urlopen(
       'https://www.tipranks.com/api/experts/getStocks/?period=year&benchmark=naive&name={}'.
@@ -31,25 +35,23 @@ class TipRanksScraper:
     ) as analyst_stocks:
       return json.loads(analyst_stocks.read())
 
-  def is_recommended(self, stock):
+  def __is_recommended(self, stock):
     return stock['latestRating']['rating'].lower() == 'buy'
 
-  def get_recommendations(self, analyst):
-    stock_evaluations = self.get_analyst_evaluations(analyst)
-    self.recommendations_list += [stock['name'] for stock in stock_evaluations if self.is_recommended(stock)]
+  def __get_recommendations(self, analyst):
+    stock_evaluations = self.__get_analyst_evaluations(analyst)
+    self.recommendations_list += [stock['name'] for stock in stock_evaluations if self.__is_recommended(stock)]
 
-  def get_all_recommendations(self):
-    analysts = self.get_analysts_info()
+  def __get_all_recommendations(self):
+    analysts = self.__get_analysts_info()
     for analyst in analysts:
       print('getting picks for {}'.format(analyst['name']))
       time.sleep(3) # don't accidentally DDOS them/hit rate limits
-      self.get_recommendations(analyst)
-
-  def count_recommendations(self):
-    self.get_all_recommendations()
-    print(Counter(self.recommendations_list))
+      self.__get_recommendations(analyst)
 
 
-scraper = TipRanksScraper()
-scraper.count_recommendations()
+
+
+# scraper = WallStScraper()
+# scraper.count_recommendations()
 
