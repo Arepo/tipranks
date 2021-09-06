@@ -1,16 +1,19 @@
 import urllib.request
 import json
-import pdb
+import time
+from collections import Counter, namedtuple
+import collections
+
+
 
 class TipRanksScraper:
-
   def get_analysts_info(self):
     with urllib.request.urlopen(
-      'https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=analyst&period=year&benchmark=naive&sector=general'
+      'https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=analyst&period=year&benchmark=naive&sector=general&numExperts=100'
     ) as analysts:
       return json.loads(analysts.read())
 
-  def analyst_stocks_url(self, analyst):
+  def get_analyst_evaluations(self, analyst):
     name = analyst['name'].lower().replace(' ', '-')
     with urllib.request.urlopen(
       'https://www.tipranks.com/api/experts/getStocks/?period=year&benchmark=naive&name={}'.
@@ -21,15 +24,22 @@ class TipRanksScraper:
   def is_recommended(self, stock):
     return stock['latestRating']['rating'].lower() == 'buy'
 
-  def extract_analyst_urls(self):
+  def get_recommendations(self, analyst):
+    stock_evaluations = self.get_analyst_evaluations(analyst)
+    self.recommendations_list += [stock['name'] for stock in stock_evaluations if self.is_recommended(stock)]
+
+  def get_all_recommendations(self):
     analysts = self.get_analysts_info()
-    stock_evaluations = self.analyst_stocks_url(analysts[0])
-    recommendations = tuple(filter(self.is_recommended, stock_evaluations))
-    print(tuple(map(lambda stock : stock['name'], recommendations)))
+    self.recommendations_list = []
+    for analyst in analysts:
+      print('getting picks for {}'.format(analyst['name']))
+      time.sleep(30) # don't accidentally DDOS them
+      self.get_recommendations(analyst)
 
-
+  def count_recommendations(self):
+    self.get_all_recommendations()
+    print(Counter(self.recommendations_list))
 
 
 scraper = TipRanksScraper()
-scraper.extract_analyst_urls()
-
+scraper.count_recommendations()
