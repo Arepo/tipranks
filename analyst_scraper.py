@@ -30,11 +30,10 @@ class AnalystScraper:
       return self.analysts_info
 
   def __get_recommendations(self, analyst):
-    stock_evaluations = self.__get_analyst_evaluations(analyst)
-    self.recommendations_list += [stock['name'] for stock in stock_evaluations if self.__is_recommended(stock)]
-
-  def __is_recommended(self, stock):
-    return stock['latestRating']['rating'].lower() == 'buy'
+    stock_evaluations = self.config.evaluations_from_analyst(
+      self.__get_analyst_evaluations(analyst)
+    )
+    self.recommendations_list += [stock[self.config.stock_identifier] for stock in stock_evaluations if self.config.is_recommended(stock)]
 
   def __get_analyst_evaluations(self, analyst):
     with urllib.request.urlopen(self.config.stocks_url(analyst)) as analyst_stocks:
