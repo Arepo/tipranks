@@ -2,19 +2,16 @@ import urllib.request
 import json
 import time
 from collections import Counter
-
+from .thing_doer import ThingDoer
 
 
 class RetailScraper:
 
-  def __init__(self, number_of_analysts=100):
-    self.analysts_info = None
-    self.recommendations_list = []
-    self.number_of_analysts = number_of_analysts
+  def __init__(self, thing_doer=None, number_of_analysts=100):
+    self.thing_doer = thing_doer or ThingDoer(number_of_analysts)
 
   def count_recommendations(self):
-    self.__get_good_recommendations()
-    return Counter(self.recommendations_list)
+    self.thing_doer.count_recommendations()
 
   def __get_analysts_info(self):
     if self.analysts_info is not None:
@@ -41,8 +38,7 @@ class RetailScraper:
     stock_holdings = self.__get_analyst_evaluations(analyst)
     self.recommendations_list += [stock['companyName'] for stock in stock_holdings if stock['percent'] > 0.01]
 
-  def __get_good_recommendations(self):
-    self.recommendations_list = []
+  def __get_filtered_recommendations(self):
     for analyst in self.__get_good_analysts_info():
       print('getting picks for {}'.format(analyst['name']))
       time.sleep(3) # don't accidentally DDOS them/hit rate limits
