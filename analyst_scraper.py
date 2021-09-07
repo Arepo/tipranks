@@ -2,6 +2,8 @@ import urllib.request
 import json
 import time
 from collections import Counter
+from wall_st_config import WallStConfig
+from retail_config import RetailConfig
 import pdb
 
 class AnalystScraper:
@@ -18,8 +20,8 @@ class AnalystScraper:
   def __get_filtered_recommendations(self):
     for analyst in self.config.filter_analysts(self.__get_analysts_info()):
       print('getting picks for {}'.format(analyst['name']))
-      time.sleep(3) # don't accidentally DDOS them/hit rate limits
-      return self.__get_recommendations(analyst)
+      time.sleep(5) # don't accidentally DDOS them/hit rate limits
+      self.__get_recommendations(analyst)
 
   def __get_analysts_info(self):
     if self.analysts_info is not None:
@@ -38,3 +40,7 @@ class AnalystScraper:
   def __get_analyst_evaluations(self, analyst):
     with urllib.request.urlopen(self.config.stocks_url(analyst)) as analyst_stocks:
       return json.loads(analyst_stocks.read())
+
+# scraper = AnalystScraper(RetailConfig(number_of_analysts=100, min_success_rate=0.8))
+scraper = AnalystScraper(WallStConfig(number_of_analysts=25))
+print(scraper.count_recommendations())
