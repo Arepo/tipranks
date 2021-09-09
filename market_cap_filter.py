@@ -1,7 +1,5 @@
 import yfinance as yf
 
-
-
 # This function best if you have a lot of time on your hands
 
 def filter_by_market_cap(recommendations, max_market_cap=5000000000):
