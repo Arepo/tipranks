@@ -19,7 +19,7 @@ class HedgeFundConfig:
       .format(analyst['name'].lower().replace(' ', '-')))
 
   def analysts_url(self):
-    return ('https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=institutional&period=year&benchmark=naive&sector=general'
+    return ('https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=institutional&period=year&benchmark=naive&sector=general&numExperts={}'
       .format(self.number_of_analysts))
 
   def filter_analysts(self, analysts):
@@ -29,8 +29,15 @@ class HedgeFundConfig:
     return analyst['activities']['quarter']
 
   def is_recommended(self, stock):
-    if (int(stock['marketCap'] or 0) < self.max_market_cap and
-      stock['portfolioPercent']    > self.min_stock_percent):
+    market_cap = (int(stock['marketCap']) or 0)
+    if (
+      self.max_market_cap == 0 or
+      market_cap < self.max_market_cap
+    ) and (
+      stock['portfolioPercent'] > self.min_stock_percent
+    ):
       return True
     return False
 
+  def get_stock_identity(self, stock):
+    return stock[self.stock_identifier]

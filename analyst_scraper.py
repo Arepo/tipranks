@@ -25,9 +25,11 @@ class AnalystScraper:
   def __get_filtered_recommendations(self):
     for analyst in self.config.filter_analysts(self.__get_analysts_info()):
       print('getting picks for {}'.format(analyst['name']))
-      time.sleep(3) # don't accidentally DDOS them/hit rate limits
+      time.sleep(3) # don't accidentally DDOS them/hit rate limits.
+                    # Normally needs to be between 3 and 15, depending on what's going on
+                    # on their end
       try:
-        self.__get_recommendations(analyst)
+        self.get_recommendations(analyst)
       except urllib.error.HTTPError:
         print('WE GOT CUT OFF, JIM')
         return self.__final_countdown_dododooodooo()
@@ -35,13 +37,12 @@ class AnalystScraper:
   def __get_analysts_info(self):
     if self.analysts_info is not None:
       return self.analysts_info
-
     with urllib.request.urlopen(self.config.analysts_url()) as analysts:
       self.analysts_info = json.loads(analysts.read())
 
       return self.analysts_info
 
-  def __get_recommendations(self, analyst):
+  def get_recommendations(self, analyst):
     stock_evaluations = self.config.evaluations_from_analyst(
       self.__get_analyst_evaluations(analyst)
     )
