@@ -11,32 +11,29 @@ import pdb
 def test_retail_scraping():
   scraper = AnalystScraper(RetailConfig(
     number_of_analysts=4,
-    stock_identifier='ticker',
     min_stock_proportion=0.01,
-    min_success_rate=0.8
+    min_success_rate=0.5
   ))
+  pdb.set_trace()
   assert scraper.count_recommendations()['NVAX'] == 1
 
-def test_wall_st_scraping():
-  scraper = AnalystScraper(WallStConfig(
-    number_of_analysts=1,
-    stock_identifier='ticker',
-    sector='general'
-  ))
-  assert scraper.count_recommendations()['DOCU'] == 1
+# def test_wall_st_scraping():
+#   scraper = AnalystScraper(WallStConfig(
+#     number_of_analysts=1,
+#     sector='general'
+#   ))
+#   assert scraper.count_recommendations()['Analog Devices (ADI)'] == 1
 
-def test_hedge_fund_scraping():
-  scraper = AnalystScraper(HedgeFundConfig(
-    number_of_analysts=1,
-    stock_identifier='name',
-    min_stock_proportion=0.05,
-    max_market_cap=0
-  ))
-  assert scraper.count_recommendations()['Amazon'] == 1
+# def test_hedge_fund_scraping():
+#   scraper = AnalystScraper(HedgeFundConfig(
+#     number_of_analysts=1,
+#     min_stock_proportion=0.05,
+#     max_market_cap=0
+#   ))
+#   assert scraper.count_recommendations()['Amazon (AMZN)'] == 1
 
-def test_blogger_scraping():
-  scraper = AnalystScraper(BloggerConfig(
-    number_of_analysts=1,
-    stock_identifier='name',
-  ))
-  assert scraper.count_recommendations()['Raytheon Technologies'] == 1
+# def test_blogger_scraping():
+#   scraper = AnalystScraper(BloggerConfig(
+#     number_of_analysts=1,
+#   ))
+#   assert scraper.count_recommendations()['Cloudera (CLDR)'] == 1

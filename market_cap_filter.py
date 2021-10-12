@@ -1,10 +1,11 @@
 import yfinance as yf
+import pdb
 
 # This function best if you have a lot of time on your hands
 
 def filter_by_market_cap(recommendations, max_market_cap=5000000000):
     # Only get those below the specified market cap
-    unique_values = list(dict.fromkeys(recommendations)) # This won't work in pdb - see https://stackoverflow.com/a/23050282/3210927
+    unique_values = list(dict.fromkeys(recommendations)) # This might not work in pdb - see https://stackoverflow.com/a/23050282/3210927
     small_caps = []
     no_caps = []
     for ticker in unique_values:

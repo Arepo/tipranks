@@ -1,17 +1,17 @@
+from tabulator import Tabulator
+
 class RetailConfig:
 
   def __init__(
     self,
     number_of_analysts=25,
     min_success_rate=0.8,
-    stock_identifier='ticker',
     min_stock_proportion=0.01
   ):
     self.number_of_analysts = number_of_analysts
     self.min_success_rate = min_success_rate
-    self.stock_identifier = stock_identifier # Can also be 'companyName' for for readability,
-                                             # though then can't filter by market cap
     self.min_stock_proportion = min_stock_proportion
+    self.tabulator = Tabulator()
 
   def analysts_url(self):
     return ('https://www.tipranks.com/api/experts/getTop25Experts/?expertType=10&numExperts={}'
@@ -31,7 +31,7 @@ class RetailConfig:
     return stock['percent'] > self.min_stock_proportion
 
   def get_stock_identity(self, stock):
-    if self.stock_identifier == 'companyName':
-      return stock[self.stock_identifier]
-    else:
-      return stock['holdings'][0]['ticker']
+    return stock['companyName'] + " (" + stock['holdings'][0]['ticker'] + ")"
+
+  def write_to_portfolios(self, analyst, stock_evaluations):
+    self.tabulator.write_to_retail_analyst_portfolios(analyst, stock_evaluations)

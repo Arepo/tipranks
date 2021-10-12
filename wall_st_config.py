@@ -5,12 +5,10 @@ class WallStConfig:
   def __init__(
     self,
     number_of_analysts=25,
-    stock_identifier='ticker',
     sector='general',
     min_success_rate=0
   ):
     self.number_of_analysts = number_of_analysts
-    self.stock_identifier = stock_identifier # Can also use 'name' for readability,
                                              # though then can't filter by market cap
     self.sector = sector # 'materials', 'services', 'healthcare', 'financial', 'technology' and 'utilities' work. If it fails it defaults to 'general'
     self.min_success_rate = min_success_rate
@@ -34,4 +32,4 @@ class WallStConfig:
     return stock['latestRating']['rating'].lower() == 'buy'
 
   def get_stock_identity(self, stock):
-    return stock[self.stock_identifier]
+    return stock['name'] + " (" + stock['ticker'] + ")"

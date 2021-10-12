@@ -5,13 +5,10 @@ class HedgeFundConfig:
   def __init__(
     self,
     number_of_analysts=25,
-    stock_identifier='name',
     min_stock_proportion=0.05,
     max_market_cap=5000000000
   ):
     self.number_of_analysts = number_of_analysts
-    self.stock_identifier = stock_identifier # Can also use 'ticker'
-    # pdb.set_trace()
     self.min_stock_proportion = min_stock_proportion
     self.max_market_cap = max_market_cap
 
@@ -41,4 +38,4 @@ class HedgeFundConfig:
     return False
 
   def get_stock_identity(self, stock):
-    return stock[self.stock_identifier]
+    return stock['name'] + " (" + stock['ticker'] + ")"

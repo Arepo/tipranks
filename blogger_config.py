@@ -2,9 +2,8 @@ import pdb
 
 class BloggerConfig:
 
-  def __init__(self, number_of_analysts=25, stock_identifier='ticker'):
+  def __init__(self, number_of_analysts=25):
     self.number_of_analysts = number_of_analysts
-    self.stock_identifier = stock_identifier
 
   def analysts_url(self):
     return ('https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=blogger&period=year&benchmark=naive&numExperts={num}'
@@ -24,4 +23,4 @@ class BloggerConfig:
     return stock['latestRating']['rating'].lower() == 'buy'
 
   def get_stock_identity(self, stock):
-    return stock[self.stock_identifier]
+    return stock['name'] + " (" + stock['ticker'] + ")"
