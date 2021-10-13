@@ -6,12 +6,13 @@ class RetailConfig:
     self,
     number_of_analysts=25,
     min_success_rate=0.8,
-    min_stock_proportion=0.01
+    min_stock_proportion=0.01,
+    tabulator=Tabulator()
   ):
     self.number_of_analysts = number_of_analysts
     self.min_success_rate = min_success_rate
     self.min_stock_proportion = min_stock_proportion
-    self.tabulator = Tabulator()
+    self.tabulator = tabulator
 
   def analysts_url(self):
     return ('https://www.tipranks.com/api/experts/getTop25Experts/?expertType=10&numExperts={}'

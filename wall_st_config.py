@@ -1,3 +1,4 @@
+from tabulator import Tabulator
 import pdb
 
 class WallStConfig:
@@ -6,12 +7,14 @@ class WallStConfig:
     self,
     number_of_analysts=25,
     sector='general',
-    min_success_rate=0
+    min_success_rate=0,
+    tabulator=Tabulator()
   ):
     self.number_of_analysts = number_of_analysts
                                              # though then can't filter by market cap
     self.sector = sector # 'materials', 'services', 'healthcare', 'financial', 'technology' and 'utilities' work. If it fails it defaults to 'general'
     self.min_success_rate = min_success_rate
+    self.tabulator = tabulator
 
   def analysts_url(self):
     return ('https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=analyst&period=year&benchmark=naive=2&sector={sector}&numExperts={num}'
@@ -33,3 +36,8 @@ class WallStConfig:
 
   def get_stock_identity(self, stock):
     return stock['name'] + " (" + stock['ticker'] + ")"
+
+  def write_to_portfolios(self, analyst, stock_evaluations):
+    self.tabulator.write_to_wall_street_analysts(analyst, stock_evaluations)
+
+
