@@ -5,8 +5,8 @@ class RetailConfig:
   def __init__(
     self,
     number_of_analysts=25,
-    min_success_rate=0.8,
-    min_stock_proportion=0.01,
+    min_success_rate=0,
+    min_stock_proportion=0,
     tabulator=Tabulator()
   ):
     self.number_of_analysts = number_of_analysts
@@ -34,5 +34,5 @@ class RetailConfig:
   def get_stock_identity(self, stock):
     return stock['companyName'] + " (" + stock['holdings'][0]['ticker'] + ")"
 
-  def write_to_portfolios(self, analyst, stock_evaluations):
+  def write_to_csv(self, analyst, stock_evaluations):
     self.tabulator.write_to_retail_analyst_portfolios(analyst, stock_evaluations)

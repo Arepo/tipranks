@@ -37,7 +37,9 @@ class WallStConfig:
   def get_stock_identity(self, stock):
     return stock['name'] + " (" + stock['ticker'] + ")"
 
-  def write_to_portfolios(self, analyst, stock_evaluations):
-    self.tabulator.write_to_wall_street_analysts(analyst, stock_evaluations)
+  def write_to_csv(self, analyst, stock_evaluations, date):
+    csv_title = f'./past_data/ws_analysts_{date.today()}.csv'
+    self.tabulator.write_to_analyst_csv(csv_title, analyst)
+    # self.tabulator.write_to_analysts_companies(analyst, stock_evaluations)
 
 

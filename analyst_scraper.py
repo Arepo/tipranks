@@ -1,13 +1,15 @@
 import urllib.request
 import json
 import time
+import random
+from datetime import date
 from collections import Counter
 
 import pdb
 
 class AnalystScraper:
 
-  def __init__(self, config, delay=15):
+  def __init__(self, config, delay=None):
     self.recommendations_list = []
     self.analysts_info = None
     self.config = config
@@ -17,7 +19,6 @@ class AnalystScraper:
 
   def count_recommendations(self):
     self.__get_filtered_recommendations()
-    # pdb.set_trace()
     return self.final_countdown_dododooodooo()
 
   def print_analyst_info(self):
@@ -26,10 +27,13 @@ class AnalystScraper:
   def __get_filtered_recommendations(self):
     for analyst in self.config.filter_analysts(self.get_analysts_info()):
       print('getting picks for {name}, rank {rank}'.format(name=analyst['name'], rank=analyst['rank']['ranked']))
-      time.sleep(self.delay)
+      if self.delay:
+        time.sleep(self.delay)
+      else:
+        delay = random.randrange(16, 47)
+        time.sleep(delay)
       try:
         self.__store_recommendations(analyst)
-        # pdb.set_trace()
       except urllib.error.HTTPError:
         print('WE GOT CUT OFF, JIM')
         return self.final_countdown_dododooodooo()
@@ -46,7 +50,7 @@ class AnalystScraper:
     stock_evaluations = self.config.evaluations_from_analyst(
       self.__get_analyst_evaluations(analyst)
     )
-    self.config.write_to_portfolios(analyst, stock_evaluations)
+    self.config.write_to_csv(analyst, stock_evaluations, date)
     self.recommendations_list += [self.config.get_stock_identity(stock) for stock in stock_evaluations if self.config.is_recommended(stock)]
 
   def __get_analyst_evaluations(self, analyst):

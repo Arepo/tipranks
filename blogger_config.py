@@ -1,9 +1,11 @@
+from tabulator import Tabulator
 import pdb
 
 class BloggerConfig:
 
-  def __init__(self, number_of_analysts=25):
+  def __init__(self, number_of_analysts=25, tabulator=Tabulator()):
     self.number_of_analysts = number_of_analysts
+    self.tabulator = tabulator
 
   def analysts_url(self):
     return ('https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=blogger&period=year&benchmark=naive&numExperts={num}'
@@ -24,3 +26,7 @@ class BloggerConfig:
 
   def get_stock_identity(self, stock):
     return stock['name'] + " (" + stock['ticker'] + ")"
+
+  def write_to_csv(self, analyst, stock_evaluations, date):
+    csv_title = f'./past_data/financial_bloggers_{date.today()}.csv'
+    self.tabulator.write_to_analyst_csv(csv_title, analyst)

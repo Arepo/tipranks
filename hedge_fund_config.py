@@ -1,3 +1,4 @@
+from tabulator import Tabulator
 import pdb
 
 class HedgeFundConfig:
@@ -5,12 +6,14 @@ class HedgeFundConfig:
   def __init__(
     self,
     number_of_analysts=25,
-    min_stock_proportion=0.05,
-    max_market_cap=5000000000
+    min_stock_proportion=0,
+    max_market_cap=0000000000,
+    tabulator=Tabulator()
   ):
     self.number_of_analysts = number_of_analysts
     self.min_stock_proportion = min_stock_proportion
     self.max_market_cap = max_market_cap
+    self.tabulator = tabulator
 
   def stocks_url(self, analyst):
     return ('https://www.tipranks.com/api/hedgeFunds/getInfo/{}/'
@@ -39,3 +42,7 @@ class HedgeFundConfig:
 
   def get_stock_identity(self, stock):
     return stock['name'] + " (" + stock['ticker'] + ")"
+
+  def write_to_csv(self, analyst, stock_evaluations, date):
+    csv_title = f'./past_data/hedge_fund_analysts_{date.today()}.csv'
+    self.tabulator.write_to_analyst_csv(csv_title, analyst)

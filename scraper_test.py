@@ -14,7 +14,6 @@ def test_retail_scraping():
     min_stock_proportion=0.01,
     min_success_rate=0.5
   ))
-  pdb.set_trace()
   assert scraper.count_recommendations()['NVAX'] == 1
 
 # def test_wall_st_scraping():
