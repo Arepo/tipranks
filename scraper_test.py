@@ -11,38 +11,40 @@ import pdb
 # and the data almost certainly will have
 
 # def test_retail_scraping():
-#   scraper = AnalystScraper(RetailConfig(
-#     number_of_analysts=4,
-#     min_stock_proportion=0.01,
-#     min_success_rate=0.5
-#   ))
-#   assert scraper.count_recommendations()['NVAX'] == 1
+#     scraper = AnalystScraper(RetailConfig(
+#         number_of_analysts=4,
+#         min_stock_proportion=0.01,
+#         min_success_rate=0.5
+#     ))
+#     assert scraper.count_recommendations()['NVAX'] == 1
 
 # def test_wall_st_scraping():
-#   scraper = AnalystScraper(WallStConfig(
-#     number_of_analysts=1,
-#     sector='general'
-#   ))
-#   assert scraper.count_recommendations()['Analog Devices (ADI)'] == 1
+#     scraper = AnalystScraper(WallStConfig(
+#         number_of_analysts=1,
+#         sector='general'
+#     ))
+#     assert scraper.count_recommendations()['Analog Devices (ADI)'] == 1
 
 # def test_hedge_fund_scraping():
-#   scraper = AnalystScraper(HedgeFundConfig(
-#     number_of_analysts=1,
-#     min_stock_proportion=0.05,
-#     max_market_cap=0
-#   ))
-#   assert scraper.count_recommendations()['Amazon (AMZN)'] == 1
+#     scraper = AnalystScraper(HedgeFundConfig(
+#         number_of_analysts=1,
+#         min_stock_proportion=0.05,
+#         max_market_cap=0
+#     ))
+#     assert scraper.count_recommendations()['Amazon (AMZN)'] == 1
 
 # def test_blogger_scraping():
-#   scraper = AnalystScraper(BloggerConfig(
-#     number_of_analysts=1,
-#   ))
-#   assert scraper.count_recommendations()['Cloudera (CLDR)'] == 1
+#     scraper = AnalystScraper(BloggerConfig(
+#         number_of_analysts=1,
+#     ))
+#     assert scraper.count_recommendations()['Cloudera (CLDR)'] == 1
 
 def test_filtering_by_market_cap():
-  cfilter = CompaniesFilter(
-    Counter({'~BKH (Black Hills)': 4, 'EXC (Exelon)': 3, 'TSE:BLX (Boralex Inc Cl A)': 2})
-  )
-  cfilter.filter_by_market_cap()
-  # pdb.set_trace()
-  assert cfilter.counted_small_caps == {'~BKH (Black Hills)': 4, 'TSE:BLX (Boralex Inc Cl A)': 2}
+    cfilter = CompaniesFilter(
+        Counter({'~BKH (Black Hills)': 4,
+                 'EXC (Exelon)': 3, 'TSE:BLX (Boralex Inc Cl A)': 2})
+    )
+    cfilter.filter_by_market_cap()
+    assert cfilter.counted_small_caps == {
+      '~BKH (Black Hills)': 4,
+      'TSE:BLX (Boralex Inc Cl A)': 2}

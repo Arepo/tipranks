@@ -7,28 +7,28 @@ from companies_filter import CompaniesFilter
 import pdb
 
 # scraper = AnalystScraper(RetailConfig(
-#   number_of_analysts=25,
-#   save_recommendations=False
+#     number_of_analysts=25,
+#     save_recommendations=False
 # ))
 # print(scraper.count_recommendations())
 
 scraper = AnalystScraper(WallStConfig(
-  number_of_analysts=25,
-  save_recommendations=False,
-  sector='services'
+    number_of_analysts=25,
+    save_recommendations=False,
+    sector='services'
 
 ))
 print(scraper.count_recommendations())
 
 # scraper = AnalystScraper(HedgeFundConfig(
-#   number_of_analysts=50,
-#   save_recommendations=False
+#     number_of_analysts=50,
+#     save_recommendations=False
 # ))
 # print(scraper.count_recommendations())
 
 # scraper = AnalystScraper(BloggerConfig(
-#   number_of_analysts=2,
-#   save_recommendations=False
+#     number_of_analysts=2,
+#     save_recommendations=False
 # ))
 # print(scraper.count_recommendations())
 
