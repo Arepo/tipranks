@@ -7,12 +7,18 @@ class RetailConfig:
     number_of_analysts=25,
     min_success_rate=0,
     min_stock_proportion=0,
+    save_recommendations=False,
     tabulator=Tabulator()
   ):
     self.number_of_analysts = number_of_analysts
     self.min_success_rate = min_success_rate
     self.min_stock_proportion = min_stock_proportion
+    self.save_recommendations = save_recommendations
     self.tabulator = tabulator
+
+  def description(self):
+    return f"Companies constituting at least a proportion of {self.min_stock_proportion}"\
+       f"of the portfolio of the top {self.number_of_analysts} retail investors"
 
   def analysts_url(self):
     return ('https://www.tipranks.com/api/experts/getTop25Experts/?expertType=10&numExperts={}'
@@ -32,7 +38,8 @@ class RetailConfig:
     return stock['percent'] > self.min_stock_proportion
 
   def get_stock_identity(self, stock):
-    return stock['companyName'] + " (" + stock['holdings'][0]['ticker'] + ")"
+    return stock['holdings'][0]['ticker'] + " (" + stock['companyName'] + ")"
 
-  def write_to_csv(self, analyst, stock_evaluations):
-    self.tabulator.write_to_retail_analyst_portfolios(analyst, stock_evaluations)
+  def write_to_csv(self, analyst, stock_evaluations, date):
+    csv_title = f'./past_data/retail_portfolios_for_{date.today()}.csv'
+    self.tabulator.write_to_retail_analyst_portfolios(analyst, stock_evaluations, csv_title)

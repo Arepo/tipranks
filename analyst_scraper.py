@@ -4,7 +4,6 @@ import time
 import random
 from datetime import date
 from collections import Counter
-
 import pdb
 
 class AnalystScraper:
@@ -13,13 +12,13 @@ class AnalystScraper:
     self.recommendations_list = []
     self.analysts_info = None
     self.config = config
-    self.delay = delay # don't accidentally DDOS them/hit rate limits.
-                       # Normally needs to be between 3 and 15, depending
+    self.delay = delay # Normally needs to be between at least 15, depending
                        # on what's going on on their end
 
   def count_recommendations(self):
+    print(self.config.description())
     self.__get_filtered_recommendations()
-    return self.final_countdown_dododooodooo()
+    return self.aggregated_recommendations()
 
   def print_analyst_info(self):
     print([(analyst['name'], analyst['rank']['ranked']) for analyst in self.analysts_info])
@@ -33,31 +32,37 @@ class AnalystScraper:
         delay = random.randrange(16, 47)
         time.sleep(delay)
       try:
-        self.__store_recommendations(analyst)
+        self.__process_recommendations(analyst)
       except urllib.error.HTTPError:
         print('WE GOT CUT OFF, JIM')
-        return self.final_countdown_dododooodooo()
+        return self.aggregated_recommendations()
 
   def get_analysts_info(self):
     if self.analysts_info is not None:
       return self.analysts_info
     with urllib.request.urlopen(self.config.analysts_url()) as analysts:
       self.analysts_info = json.loads(analysts.read())
-      # self.print_analyst_info()
       return self.analysts_info
 
-  def __store_recommendations(self, analyst):
+  def __process_recommendations(self, analyst):
     stock_evaluations = self.config.evaluations_from_analyst(
       self.__get_analyst_evaluations(analyst)
     )
-    self.config.write_to_csv(analyst, stock_evaluations, date)
+    self.__save_recommendations(analyst, stock_evaluations)
+    self.__log_recommendations(stock_evaluations)
+
+  def __save_recommendations(self, analyst, stock_evaluations):
+    if self.config.save_recommendations:
+      self.config.write_to_csv(analyst, stock_evaluations, date)
+
+  def __log_recommendations(self, stock_evaluations):
     self.recommendations_list += [self.config.get_stock_identity(stock) for stock in stock_evaluations if self.config.is_recommended(stock)]
 
   def __get_analyst_evaluations(self, analyst):
     with urllib.request.urlopen(self.config.stocks_url(analyst)) as analyst_stocks:
       return json.loads(analyst_stocks.read())
 
-  def final_countdown_dododooodooo(self):
+  def aggregated_recommendations(self):
     return Counter(self.recommendations_list)
 
 

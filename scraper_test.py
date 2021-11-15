@@ -1,20 +1,22 @@
-from .analyst_scraper import AnalystScraper
-from .wall_st_config import WallStConfig
-from .retail_config import RetailConfig
-from .hedge_fund_config import HedgeFundConfig
-from .blogger_config import BloggerConfig
+# from .analyst_scraper import AnalystScraper
+# from .wall_st_config import WallStConfig
+# from .retail_config import RetailConfig
+# from .hedge_fund_config import HedgeFundConfig
+# from .blogger_config import BloggerConfig
+from .companies_filter import CompaniesFilter
+from collections import Counter
 import pdb
 
 # Fix tests before making changes, since the API might have changed from under us
 # and the data almost certainly will have
 
-def test_retail_scraping():
-  scraper = AnalystScraper(RetailConfig(
-    number_of_analysts=4,
-    min_stock_proportion=0.01,
-    min_success_rate=0.5
-  ))
-  assert scraper.count_recommendations()['NVAX'] == 1
+# def test_retail_scraping():
+#   scraper = AnalystScraper(RetailConfig(
+#     number_of_analysts=4,
+#     min_stock_proportion=0.01,
+#     min_success_rate=0.5
+#   ))
+#   assert scraper.count_recommendations()['NVAX'] == 1
 
 # def test_wall_st_scraping():
 #   scraper = AnalystScraper(WallStConfig(
@@ -36,3 +38,10 @@ def test_retail_scraping():
 #     number_of_analysts=1,
 #   ))
 #   assert scraper.count_recommendations()['Cloudera (CLDR)'] == 1
+
+def test_filtering_by_market_cap():
+  cfilter = CompaniesFilter(
+    Counter({'~BKH (Black Hills)': 4, 'EXC (Exelon)': 3, 'TSE:BLX (Boralex Inc Cl A)': 2})
+  )
+  cfilter.filter_by_market_cap()
+  assert cfilter.small_caps == {'~BKH': 4, 'TSE:BLX': 2}

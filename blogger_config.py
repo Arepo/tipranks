@@ -3,9 +3,13 @@ import pdb
 
 class BloggerConfig:
 
-  def __init__(self, number_of_analysts=25, tabulator=Tabulator()):
+  def __init__(self, number_of_analysts=25, save_recommendations=False, tabulator=Tabulator()):
     self.number_of_analysts = number_of_analysts
+    self.save_recommendations = save_recommendations
     self.tabulator = tabulator
+
+  def description(self):
+    return f"Recommendations from top {self.number_of_analysts} financial bloggers"
 
   def analysts_url(self):
     return ('https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=blogger&period=year&benchmark=naive&numExperts={num}'
@@ -25,7 +29,7 @@ class BloggerConfig:
     return stock['latestRating']['rating'].lower() == 'buy'
 
   def get_stock_identity(self, stock):
-    return stock['name'] + " (" + stock['ticker'] + ")"
+    return stock['ticker'] + " (" + stock['name'] + ")"
 
   def write_to_csv(self, analyst, stock_evaluations, date):
     csv_title = f'./past_data/financial_bloggers_{date.today()}.csv'
