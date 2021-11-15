@@ -44,4 +44,5 @@ def test_filtering_by_market_cap():
     Counter({'~BKH (Black Hills)': 4, 'EXC (Exelon)': 3, 'TSE:BLX (Boralex Inc Cl A)': 2})
   )
   cfilter.filter_by_market_cap()
-  assert cfilter.small_caps == {'~BKH': 4, 'TSE:BLX': 2}
+  # pdb.set_trace()
+  assert cfilter.counted_small_caps == {'~BKH (Black Hills)': 4, 'TSE:BLX (Boralex Inc Cl A)': 2}

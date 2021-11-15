@@ -15,7 +15,7 @@ import pdb
 scraper = AnalystScraper(WallStConfig(
   number_of_analysts=25,
   save_recommendations=False,
-  sector='healthcare'
+  sector='services'
 
 ))
 print(scraper.count_recommendations())
