@@ -15,7 +15,7 @@ class CompaniesFilter:
 
   def filter_by_market_cap(self, max_market_cap=5000000000):
     # Only get those below the specified market cap
-    for company_name in list(self.companies.keys()):
+    for company_name in self.companies:
       self.__log_whether_smallcap(company_name, max_market_cap)
 
     self.counted_small_caps = Counter(
