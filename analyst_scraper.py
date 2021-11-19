@@ -45,18 +45,19 @@ class AnalystScraper:
             return self.analysts_info
 
     def __process_recommendations(self, analyst):
-        stock_evaluations = self.config.evaluations_from_analyst(
-            self.__get_analyst_evaluations(analyst)
-        )
-        self.__save_recommendations(analyst, stock_evaluations)
-        self.__log_recommendations(stock_evaluations)
+        evaluation_data = self.__get_analyst_evaluations(analyst)
+        stock_picks = self.config.analyst_stock_picks(evaluation_data)
+        self.__save_recommendations(analyst, evaluation_data)
+        self.__log_recommendations(stock_picks)
 
     def __save_recommendations(self, analyst, stock_evaluations):
         if self.config.save_recommendations:
             self.config.write_to_csv(analyst, stock_evaluations, date)
 
     def __log_recommendations(self, stock_evaluations):
-        self.recommendations_list += [self.config.get_stock_identity(stock) for stock in stock_evaluations if self.config.is_recommended(stock)]
+        self.recommendations_list += [
+          self.config.get_stock_identity(stock) for stock in stock_evaluations
+          if self.config.is_recommended(stock)]
 
     def __get_analyst_evaluations(self, analyst):
         with urllib.request.urlopen(self.config.stocks_url(analyst)) as analyst_stocks:

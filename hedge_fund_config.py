@@ -16,24 +16,27 @@ class HedgeFundConfig:
     self.max_market_cap = max_market_cap
     self.save_recommendations = save_recommendations
     self.tabulator = tabulator
-    self.description = "hedge funds"
+    self.description = 'hedge funds'
 
   def description(self):
-    return f"Companies constituting at least a proportion of {self.min_stock_proportion}"\
-       f"of the portfolio of the top {self.number_of_analysts} hedge funds"
+    return (
+      'Companies constituting at least a proportion of '\
+      f'{self.min_stock_proportion} of the portfolio of the top '\
+      f'{self.number_of_analysts} hedge funds')
 
   def stocks_url(self, analyst):
     return ('https://www.tipranks.com/api/hedgeFunds/getInfo/{}/'
       .format(analyst['name'].lower().replace(' ', '-')))
 
   def analysts_url(self):
-    return ('https://www.tipranks.com/api/experts/GetTop25Experts/?expertType=institutional&period=year&benchmark=naive&sector=general&numExperts={}'
-      .format(self.number_of_analysts))
+    return ('https://www.tipranks.com/api/experts/GetTop25Experts/'\
+      '?expertType=institutional&period=year&benchmark=naive&sector='\
+      'general&numExperts={self.number_of_analysts}')
 
   def filter_analysts(self, analysts):
     return analysts
 
-  def evaluations_from_analyst(self, analyst):
+  def analyst_stock_picks(self, analyst):
     return analyst['activities']['quarter']
 
   def is_recommended(self, stock):
@@ -48,8 +51,8 @@ class HedgeFundConfig:
     return False
 
   def get_stock_identity(self, stock):
-    return stock['ticker'] + " (" + stock['name'] + ")"
+    return stock['ticker'] + ' (' + stock['name'] + ')'
 
   def write_to_csv(self, analyst, stock_evaluations, date):
-    csv_title = f'./past_data/hedge_fund_analysts_{date.today()}.csv'
+    csv_title = f'./past_data/hedge_funds/hedge_fund_analysts_{date.today()}.csv'
     self.tabulator.write_to_analyst_csv(csv_title, analyst)
